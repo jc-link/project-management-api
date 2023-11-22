@@ -1,11 +1,23 @@
 const { TaskDTO } = require("../dto/taskDto")
 const { Task } = require("../model/task")
+const { ProjectService } = require("./projectService")
+const logger = require("../utils/logger")
 
 class TaskService {
+  constructor() {
+    this.projectService = new ProjectService()
+  }
   async create(taskDTO) {
     const task = new Task(taskDTO)
-    const newTask = await task.save()
-    return this.mapToDTO(newTask)
+    try {
+      const savedTask = await task.save()
+      await this.projectService.updateTasks(savedTask.projectId, savedTask)
+      logger.info(`Task saved: '${savedTask}'`)
+      return this.mapToDTO(savedTask)
+    } catch (err) {
+      logger.error(err)
+      throw err
+    }
   }
 
   async getAll() {
@@ -22,19 +34,26 @@ class TaskService {
   }
 
   async updateById(taskDTO) {
-    console.log(taskDTO)
     const updatedTask = await Task.findOneAndUpdate(
       { _id: taskDTO.id },
       taskDTO,
       { new: true }
     )
-    console.log(`updatedTask: ${updatedTask}`)
+    logger.info(`Task updated: '${updatedTask}'`)
     return this.mapToDTO(updatedTask)
   }
 
-  async deleteById(id) {
-    await Task.findByIdAndDelete(id)
-    return true
+  async deleteById(task) {
+    const { id, projectId } = task
+    try {
+      await Task.findByIdAndDelete(id)
+      await this.projectService.deleteTask(projectId, id)
+      logger.info(`Task deleted: '${id}'`)
+      return true
+    } catch (err) {
+      logger.error(err)
+      throw err
+    }
   }
 
   mapToDTOs(tasks) {
@@ -43,13 +62,13 @@ class TaskService {
   }
   mapToDTO(task) {
     const taskDTO = new TaskDTO(
+      task._id,
       task.name,
       task.description,
       task.priority,
       task.dueDate,
       task.completed,
-      task.projectId,
-      task._id
+      task.projectId
     )
     return taskDTO
   }

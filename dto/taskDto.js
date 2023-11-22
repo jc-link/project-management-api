@@ -1,12 +1,12 @@
 class TaskDTO {
-  constructor(name, description, priority, dueDate, completed, projectId, id) {
+  constructor(id, name, description, priority, dueDate, completed, projectId) {
+    this.id = id
     this.name = name
     this.description = description
     this.priority = priority
     this.dueDate = dueDate
     this.completed = completed
     this.projectId = projectId
-    this.id = id
   }
 }
 

@@ -1,6 +1,5 @@
 const express = require("express")
 const router = express.Router()
-const { Task } = require("../model/task")
 const { TaskDTO } = require("../dto/taskDto")
 const { TaskService } = require("../service/taskService")
 const taskMiddleware = require("../middleware/taskMiddleware")
@@ -11,6 +10,7 @@ router.post("/", async (req, res) => {
   const { name, description, priority, dueDate, completed, projectId } =
     req.body
   const taskDTO = new TaskDTO(
+    "",
     name,
     description,
     priority,
@@ -53,7 +53,7 @@ router.patch("/:id", taskMiddleware, async (req, res) => {
 // DELETE /:id - Delete a task by its ID
 router.delete("/:id", taskMiddleware, async (req, res) => {
   try {
-    const result = await taskService.deleteById(res.task.id)
+    const result = await taskService.deleteById(res.task)
     if (result) {
       res.status(200).json({ message: "Task deleted successfully" })
     }
