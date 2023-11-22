@@ -4,7 +4,8 @@
   "description": "An API RESTful to manage projects and their tasks.",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon index.js"
+    "start:dev": "nodemon index.js",
+    "start": "node index.js"
   },
   "author": "jcdev",
   "license": "ISC",
