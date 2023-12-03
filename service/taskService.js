@@ -1,4 +1,4 @@
-const { TaskDTO } = require("../dto/taskDto")
+const { TaskDTO } = require("../dto/TaskDTO")
 const { Task } = require("../model/task")
 const { ProjectService } = require("./projectService")
 const logger = require("../utils/logger")
@@ -12,7 +12,7 @@ class TaskService {
     try {
       const savedTask = await task.save()
       await this.projectService.updateTasks(savedTask.projectId, savedTask)
-      logger.info(`Task saved: '${savedTask}'`)
+      logger.info(`Task saved: '${JSON.stringify(savedTask)}'`)
       return this.mapToDTO(savedTask)
     } catch (err) {
       logger.error(err)
