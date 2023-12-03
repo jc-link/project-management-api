@@ -1,4 +1,4 @@
-const { TaskDTO } = require("../dto/TaskDTO")
+const { TaskDTO } = require("../dto/taskDto")
 const { Task } = require("../model/task")
 const { ProjectService } = require("./projectService")
 const logger = require("../utils/logger")
